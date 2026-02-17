@@ -39,6 +39,5 @@ export interface Insight {
 
 export enum ConsultationStep {
   OBJECTIVE,
-  CONTEXT,
   IDENTITY
 }

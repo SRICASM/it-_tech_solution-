@@ -1,8 +1,8 @@
 /// <reference types="vite/client" />
 export interface ConsultationData {
   projectType: string[];
-  techStack: string[];
-  details: string;
+  /* techStack: string[]; Removed (Phase 2) */
+  /* details: string; Removed (Phase 2) */
   name: string;
   company: string;
   role: string;
@@ -48,7 +48,6 @@ export const submitConsultation = async (data: ConsultationData) => {
   const payload = {
     ...data,
     projectType: data.projectType.join(', '),
-    techStack: data.techStack.join(', '),
   };
 
   if (!GOOGLE_SCRIPT_URL) {
