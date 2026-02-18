@@ -64,10 +64,10 @@ const Navigation: React.FC = () => {
           </div>
           <div className="flex flex-col">
             <span className="text-sm font-bold tracking-[0.2em] text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-cyan group-hover:to-violet transition-all duration-300">
-              NEURAL
+              NEURALINK
             </span>
             <span className="text-[10px] text-silver/50 tracking-widest group-hover:text-cyan/60 transition-colors">
-              SYSTEMS
+              INFOTECH
             </span>
           </div>
         </div>
@@ -105,7 +105,7 @@ const Navigation: React.FC = () => {
             {/* Content */}
             <div className="relative z-10 flex items-center gap-2 group-hover:text-obsidian transition-colors duration-300">
               <Zap size={14} className="group-hover:fill-current" />
-              <span>START PROJECT</span>
+              <span>GET CONSULTATION</span>
             </div>
           </button>
         </div>
@@ -137,7 +137,7 @@ const Navigation: React.FC = () => {
             className="mt-4 w-full bg-gradient-to-r from-cyan to-violet text-white py-4 rounded font-bold tracking-widest flex justify-center items-center gap-2 shadow-[0_0_20px_rgba(0,240,255,0.2)]"
             onClick={(e) => handleNavClick(e, '#contact')}
           >
-            START PROJECT
+            GET CONSULTATION
           </button>
         </div>
       )}

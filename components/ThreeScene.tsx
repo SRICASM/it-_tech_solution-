@@ -3,6 +3,15 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 
 // Component to handle dynamic camera movement based on scroll and aspect ratio
+// Pre-allocated vectors — reused every frame to avoid GC pressure
+const _heroPosition = new THREE.Vector3(0, 0, 12);
+const _overviewPosition = new THREE.Vector3(0, 0, 20);
+const _targetPosition = new THREE.Vector3();
+
+// Pre-allocated colors for line material interpolation
+const _lineColorA = new THREE.Color("#2EE6D6");
+const _lineColorB = new THREE.Color("#7000FF");
+
 const CameraController = () => {
     const { camera, size } = useThree();
     const scrollRef = useRef(0);
@@ -58,19 +67,12 @@ const CameraController = () => {
             }
 
             // --- 3. Camera States ---
-            // Hero Anchor: Camera placed DEEP inside the front-facing cluster (Z=12).
-            const heroPosition = new THREE.Vector3(0, 0, 12);
-
-            // Overview State: Pulled back to reveal the full architectural graph.
-            // Restricted to 20 to keep content legible and immersive.
-            const overviewPosition = new THREE.Vector3(0, 0, 20);
-
-            // Interpolate Position
-            const targetPosition = new THREE.Vector3().lerpVectors(heroPosition, overviewPosition, zoomProgress);
+            // Reuse pre-allocated vectors instead of creating new ones every frame
+            _targetPosition.lerpVectors(_heroPosition, _overviewPosition, zoomProgress);
 
             // Apply HEAVY Damping for architectural weight (Massive structure feel)
             // Lower factor = more damping / lag.
-            camera.position.lerp(targetPosition, delta * 0.5);
+            camera.position.lerp(_targetPosition, delta * 0.5);
 
             // Interpolate FOV for a subtle "Dolly Zoom" feeling
             // Narrower FOV when zoomed out makes it feel more orthographic/schematic
@@ -377,9 +379,7 @@ const NeuralNetwork = () => {
 
             // Update Lines Color to match
             if (lineMaterialRef.current) {
-                const colorA = new THREE.Color("#2EE6D6"); // Cyanish
-                const colorB = new THREE.Color("#7000FF"); // Purple
-                lineMaterialRef.current.color.lerpColors(colorA, colorB, newScroll);
+                lineMaterialRef.current.color.lerpColors(_lineColorA, _lineColorB, newScroll);
                 lineMaterialRef.current.opacity = 0.08 + (newScroll * 0.05);
             }
         }

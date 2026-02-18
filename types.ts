@@ -17,6 +17,9 @@ export interface CaseStudy {
   id: string;
   client: string;
   title: string;
+  description: string;
+  detail: string;
+  techStack: string[];
   metrics: { label: string; value: string }[];
   image: string;
 }
@@ -35,9 +38,6 @@ export interface Insight {
   date: string;
   readTime: string;
   excerpt: string;
-}
-
-export enum ConsultationStep {
-  OBJECTIVE,
-  IDENTITY
+  body: string;
+  image: string;
 }

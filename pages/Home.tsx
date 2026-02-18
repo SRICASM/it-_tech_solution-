@@ -1,14 +1,34 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import ThreeScene from '../components/ThreeScene';
 import Navigation from '../components/Navigation';
 import ConsultationForm from '../components/ConsultationForm';
 import CaseStudyScene from '../components/CaseStudyScene';
+import DetailModal from '../components/DetailModal';
 import { SERVICES, CASE_STUDIES, PROCESS_STEPS, INSIGHTS } from '../constants';
-import { ArrowUpRight, ChevronRight, Zap, ArrowRight, Activity, Terminal } from 'lucide-react';
+import { CaseStudy, Insight } from '../types';
+import { ArrowUpRight, ChevronRight, ArrowRight, Activity } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+
+type ModalContent =
+  | { type: 'caseStudy'; data: CaseStudy }
+  | { type: 'insight'; data: Insight }
+  | null;
 
 const Home: React.FC = () => {
   const { scrollY, scrollYProgress } = useScroll();
+  const [modalContent, setModalContent] = useState<ModalContent>(null);
+
+  const openCaseStudy = useCallback((study: CaseStudy) => {
+    setModalContent({ type: 'caseStudy', data: study });
+  }, []);
+
+  const openInsight = useCallback((insight: Insight) => {
+    setModalContent({ type: 'insight', data: insight });
+  }, []);
+
+  const closeModal = useCallback(() => {
+    setModalContent(null);
+  }, []);
   
   // Interpolate background color from Hero (Obsidian) to Footer (Deep Blue-Black)
   // Transitions starts at 40% scroll and completes by 90% to match the 3D scene
@@ -93,7 +113,7 @@ const Home: React.FC = () => {
               
               {/* Secondary Hero Button */}
               <motion.button 
-                onClick={() => document.getElementById('work')?.scrollIntoView({behavior:'smooth'})} 
+                onClick={() => document.getElementById('work')?.scrollIntoView({behavior:'smooth'})}
                 className="relative group overflow-hidden px-8 py-4 rounded font-bold tracking-wider w-full md:w-auto bg-black/30 backdrop-blur-md border border-white/10 text-white"
                 whileHover={{ 
                   scale: 1.05, 
@@ -127,11 +147,11 @@ const Home: React.FC = () => {
         <div className="max-w-7xl mx-auto px-6">
             <div className="flex flex-col md:flex-row justify-between items-end mb-16 border-b border-white/10 pb-8">
                 <div>
-                    <h2 className="text-4xl font-bold text-white mb-2">Technical Solutions</h2>
-                    <p className="text-silver font-mono">Engineered for scale and security.</p>
+                    <h2 className="text-4xl font-bold text-white mb-2">Our Services</h2>
+                    <p className="text-silver font-mono">Built for performance, security, and scale.</p>
                 </div>
                 <div className="hidden md:block text-right">
-                    <span className="text-cyan font-mono">01 / SOLUTIONS</span>
+                    <span className="text-cyan font-mono">01 / SERVICES</span>
                 </div>
             </div>
 
@@ -166,11 +186,11 @@ const Home: React.FC = () => {
         <div className="max-w-7xl mx-auto px-6">
             <div className="flex flex-col md:flex-row justify-between items-end mb-16 border-b border-white/10 pb-8">
                 <div>
-                    <h2 className="text-4xl font-bold text-white mb-2">System Protocol</h2>
-                    <p className="text-silver font-mono">The rigorous standard we apply to every deployment.</p>
+                    <h2 className="text-4xl font-bold text-white mb-2">Our Approach</h2>
+                    <p className="text-silver font-mono">The strategic methodology behind every solution we deliver.</p>
                 </div>
                 <div className="hidden md:block text-right">
-                    <span className="text-white/50 font-mono">02 / CAPABILITIES</span>
+                    <span className="text-white/50 font-mono">02 / APPROACH</span>
                 </div>
             </div>
 
@@ -227,7 +247,7 @@ const Home: React.FC = () => {
             <div className="flex flex-col md:flex-row justify-between items-end mb-16 border-b border-white/10 pb-8">
                 <div>
                     <h2 className="text-4xl font-bold text-white mb-2">Selected Work</h2>
-                    <p className="text-silver font-mono">Transformative outcomes for enterprise clients.</p>
+                    <p className="text-silver font-mono">Enterprise solutions and specialized products we've delivered.</p>
                 </div>
                 <div className="hidden md:block text-right">
                     <span className="text-violet font-mono">03 / WORK</span>
@@ -248,16 +268,16 @@ const Home: React.FC = () => {
                                 {study.client}
                             </span>
                             <h3 className="text-3xl md:text-5xl font-bold text-white">{study.title}</h3>
-                            <div className="grid grid-cols-2 gap-8 py-6 border-t border-b border-white/10 backdrop-blur-md bg-white/5 rounded-lg p-6 hover:bg-white/10 transition-colors duration-300">
-                                {study.metrics.map((metric) => (
-                                    <div key={metric.label}>
-                                        <div className="text-3xl font-mono text-white mb-1 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">{metric.value}</div>
-                                        <div className="text-silver/50 text-xs uppercase tracking-wider">{metric.label}</div>
-                                    </div>
-                                ))}
+                            <div className="py-6 border-t border-b border-white/10 backdrop-blur-md bg-white/5 rounded-lg p-6 hover:bg-white/10 transition-colors duration-300">
+                                <p className="text-silver/60 text-sm leading-relaxed">
+                                    {study.description}
+                                </p>
                             </div>
-                            <button className="flex items-center gap-2 text-white hover:text-cyan transition-colors group text-sm font-bold tracking-wide">
-                                VIEW CASE STUDY <ArrowUpRight size={16} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
+                            <button
+                              onClick={() => openCaseStudy(study)}
+                              className="flex items-center gap-2 text-white hover:text-cyan transition-colors group text-sm font-bold tracking-wide"
+                            >
+                                VIEW PROJECT DETAILS <ArrowUpRight size={16} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
                             </button>
                         </div>
                     </div>
@@ -271,20 +291,24 @@ const Home: React.FC = () => {
          <div className="max-w-7xl mx-auto px-6">
             <div className="flex flex-col md:flex-row justify-between items-end mb-16 border-b border-white/10 pb-8">
                 <div>
-                    <h2 className="text-4xl font-bold text-white mb-2">Neural Logs</h2>
-                    <p className="text-silver font-mono">Engineering intelligence and architectural patterns.</p>
+                    <h2 className="text-4xl font-bold text-white mb-2">Insights & Resources</h2>
+                    <p className="text-silver font-mono">Technology intelligence and industry perspectives.</p>
                 </div>
                 <div className="hidden md:block text-right">
-                    <span className="text-violet font-mono">04 / INSIGHTS</span>
+                    <span className="text-violet font-mono">04 / RESOURCES</span>
                 </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                {INSIGHTS.map((insight) => (
-                  <div key={insight.id} className="group relative bg-[#0C0C10] border border-white/10 hover:border-violet/50 p-8 transition-all duration-300 flex flex-col justify-between overflow-hidden">
+                  <div
+                    key={insight.id}
+                    onClick={() => openInsight(insight)}
+                    className="group relative bg-[#0C0C10] border border-white/10 hover:border-violet/50 p-8 transition-all duration-300 flex flex-col justify-between overflow-hidden cursor-pointer"
+                  >
                       {/* Decorative Corner */}
                       <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-white/10 group-hover:border-violet transition-colors"></div>
-                      
+
                       <div>
                         <div className="flex justify-between items-center mb-6">
                            <span className="text-[10px] font-mono text-violet uppercase tracking-widest border border-violet/20 px-2 py-1 rounded bg-violet/5">{insight.category}</span>
@@ -293,7 +317,7 @@ const Home: React.FC = () => {
                         <h3 className="text-xl font-bold text-white mb-3 group-hover:text-cyan transition-colors">{insight.title}</h3>
                         <p className="text-sm text-silver/60 mb-6 leading-relaxed line-clamp-3">{insight.excerpt}</p>
                       </div>
-                      
+
                       <div className="flex items-center gap-2 text-[10px] font-mono text-white/50 uppercase tracking-widest group-hover:text-white transition-colors">
                          <span>{insight.readTime}</span>
                          <span className="w-4 h-[1px] bg-white/20 group-hover:bg-cyan transition-colors"></span>
@@ -312,10 +336,9 @@ const Home: React.FC = () => {
         
         <div className="max-w-7xl mx-auto px-6 relative z-10">
             <div className="text-center mb-16">
-                <h2 className="text-4xl md:text-6xl font-bold text-white mb-6 tracking-tight">Ready to Scale?</h2>
+                <h2 className="text-4xl md:text-6xl font-bold text-white mb-6 tracking-tight">Ready to Scale with Intelligent Technology?</h2>
                 <p className="text-silver text-lg max-w-2xl mx-auto leading-relaxed">
-                    Stop building technical debt. Start building your future. 
-                    Use our interactive builder to scope your project.
+                    Book a free strategy consultation today. Let's build scalable, secure systems that drive measurable growth.
                 </p>
             </div>
             
@@ -342,14 +365,14 @@ const Home: React.FC = () => {
                 {/* Softened border and shadow for a 'settled' look */}
                 <div className="w-8 h-8 bg-white/5 rounded-md flex items-center justify-center font-bold text-cyan text-sm border border-white/5 shadow-none">N</div>
                 <div className="flex flex-col">
-                    <span className="text-white text-sm tracking-[0.2em] font-bold">NEURAL</span>
-                    <span className="text-[10px] text-white/30 tracking-widest">SYSTEMS INC.</span>
+                    <span className="text-white text-sm tracking-[0.2em] font-bold">NEURALINK</span>
+                    <span className="text-[10px] text-white/30 tracking-widest">INFOTECH</span>
                 </div>
             </div>
 
             {/* Links - Muted colors for calmness */}
             <div className="flex gap-10">
-                {['Privacy', 'Terms', 'Sitemap', 'Support'].map(link => (
+                {['Services', 'About', 'Trading Solutions', 'Contact'].map(link => (
                     <a key={link} href="#" className="text-silver/50 hover:text-white text-xs font-mono uppercase tracking-widest transition-colors duration-300 relative group">
                         {link}
                         <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-cyan transition-all duration-300 group-hover:w-full opacity-50"></span>
@@ -359,10 +382,13 @@ const Home: React.FC = () => {
 
             {/* Copyright */}
             <div className="text-white/30 text-[10px] font-mono tracking-wider">
-                © {new Date().getFullYear()} NEURAL SYSTEMS. ALL RIGHTS RESERVED.
+                © {new Date().getFullYear()} NEURALINK INFOTECH. ALL RIGHTS RESERVED.
             </div>
         </div>
       </footer>
+
+      {/* Detail Modal */}
+      <DetailModal content={modalContent} onClose={closeModal} />
     </motion.div>
   );
 };
