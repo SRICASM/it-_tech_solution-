@@ -3,16 +3,11 @@ import ThreeScene from '../components/ThreeScene';
 import Navigation from '../components/Navigation';
 import ConsultationForm from '../components/ConsultationForm';
 import CaseStudyScene from '../components/CaseStudyScene';
-import DetailModal from '../components/DetailModal';
+import DetailModal, { ModalContent } from '../components/DetailModal';
 import { SERVICES, CASE_STUDIES, PROCESS_STEPS, INSIGHTS } from '../constants';
 import { CaseStudy, Insight } from '../types';
 import { ArrowUpRight, ChevronRight, ArrowRight, Activity } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-
-type ModalContent =
-  | { type: 'caseStudy'; data: CaseStudy }
-  | { type: 'insight'; data: Insight }
-  | null;
 
 const Home: React.FC = () => {
   const { scrollY, scrollYProgress } = useScroll();

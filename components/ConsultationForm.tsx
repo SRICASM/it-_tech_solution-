@@ -27,7 +27,6 @@ const ConsultationForm: React.FC = React.memo(() => {
     setIsSubmitting(true);
     try {
       const result = await submitConsultation({
-        projectType: [],
         name,
         email,
         company,

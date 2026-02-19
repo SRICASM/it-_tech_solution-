@@ -1,10 +1,10 @@
 /// <reference types="vite/client" />
+
 export interface ConsultationData {
-  projectType: string[];
   name: string;
+  email: string;
   company: string;
   role: string;
-  email: string;
 }
 
 /**

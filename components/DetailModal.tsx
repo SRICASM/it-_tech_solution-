@@ -1,9 +1,9 @@
 import React, { useEffect, useCallback } from 'react';
-import { X, ArrowUpRight } from 'lucide-react';
+import { X } from 'lucide-react';
 import { CaseStudy, Insight } from '../types';
 import { motion, AnimatePresence } from 'framer-motion';
 
-type ModalContent =
+export type ModalContent =
   | { type: 'caseStudy'; data: CaseStudy }
   | { type: 'insight'; data: Insight }
   | null;
